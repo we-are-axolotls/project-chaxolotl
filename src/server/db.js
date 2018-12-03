@@ -120,40 +120,54 @@ db.once('open', function() {
 //   }
 // })
 
-let output = undefined;
 
-User.findOne({id: 1}, function (err, res){
-  if (err){
-    console.error(err)
-  } else {
-    //console.log("Danni's _id " + res['_id'])
-  }
-})
-  .then((res) => {
-    Message.find({senderId: res['_id']}, (err, res) => {
-      //console.log(res);
-      //senderMsg = res;
-      output = res;
-    })
-  })
+//Queries
+// let output = undefined;
+
+// User.findOne({id: 1}, function (err, res){
+//   if (err){
+//     console.error(err)
+//   } else {
+//     //console.log("Danni's _id " + res['_id'])
+//   }
+// })
+//   .then((res) => {
+//     Message.find({senderId: res['_id']}, (err, res) => {
+//       //console.log(res);
+//       output = res;
+//     })
+//   })
 
 
-User.findOne({id: 1}, function (err, res){
-  if (err){
-    console.error(err)
-  } else {
-    //console.log("Danni's _id " + res['_id'])
-  }
-})
-  .then((res) => {
-    Message.find({receiverId: res['_id']}, (err, res) => {
-      //console.log(res);
-      //receiverMsg.concat(res);
-      output = output.concat(res);
-      console.log(output);
-    })
-  })
-//console.log('receiverMsgs ' + receiverMsg);
+// User.findOne({id: 1}, function (err, res){
+//   if (err){
+//     console.error(err)
+//   } else {
+//     //console.log("Danni's _id " + res['_id'])
+//   }
+// })
+//   .then((res) => {
+//     Message.find({receiverId: res['_id']}, (err, res) => {
+//       //console.log(res);
+//       output = output.concat(res);
+//       console.log(output);
+//     })
+//   })
+
+
+// User.aggregate([
+//   { $match: {id: 1} },
+//   { $lookup: {
+//       from: 'Message',
+//       localField: '_id',
+//       foreignField: 'senderId', 
+//       as: 'sender'
+//     } 
+//   },
+//   {
+//     $unwind: '$sender'
+//   },
+// ])
 
 
 module.exports = db;
