@@ -44,12 +44,8 @@ const initialState = {
 
 	},
 
-	// keeps track of whether conversations object was updated or not
-	updatedConversations: false,
-
 	// dynamically updating what user inputs in text field
 	messageInput: '',
-
 
 	// for fetching data
 	loading: false,
@@ -75,6 +71,14 @@ const ChatBoxReducer = (state=initialState, action) => {
 				currentConversation: currentConversation
 			}
 
+    case types.REFRESH_CONVO: 
+      currentConversation = state.currentConversation.slice();
+      currentConversation = action.payload;
+
+      return {
+        ...state,
+        currentConversation: currentConversation
+      }
 
     //******************* CHAT BOX ACTIONS *******************
 
@@ -84,21 +88,14 @@ const ChatBoxReducer = (state=initialState, action) => {
 				messageInput: action.payload
 			}
 
-
-
-
     case types.ADD_MESSAGE:
       // creates a deep copy of userConversations
       const userConversations = Object.assign({}, state.userConversations);
       // targets conversation partner
       const otherUser = state.conversationPartner;
-    
+      const message = action.payload;
+
       currentConversation = state.currentConversation.slice()
-			const message = {
-        created_by: state.currentUser.id,
-        created_at: Date.now().toString(),
-        message: state.messageInput
-      }
       currentConversation.push(message);
       
       // assigns array copy to object copy
@@ -108,15 +105,9 @@ const ChatBoxReducer = (state=initialState, action) => {
         ...state,
         // updates userConversations object
         userConversations: userConversations,
-				updatedConversations: true, 
         currentConversation: currentConversation,
         messageInput: ''
 			}
-
-
-
-
-
 
 		// boiler plate for fetching data from db
 		case types.FETCH_USER_DATA_BEGIN:
@@ -126,24 +117,17 @@ const ChatBoxReducer = (state=initialState, action) => {
 					error: null
 				};
 
-
-
-
-
 		case types.FETCH_USER_DATA_SUCCESS:
+
+// console.log(action.payload)
+			const userData = action.payload;
+
 			return {
 					...state,
 					loading: false,
-
-/**** TEST TO SEE WHAT IS RETURNED FROM ACTION.PAYLOAD ****/
-					userConversations: action.payload
-/**********************************************************/
-
+          userBase: userData.userBase,
+					userConversations: userData.userConversations
 				};
-
-
-
-
 
 		case types.FETCH_USER_DATA_FAILURE:
 			 return {

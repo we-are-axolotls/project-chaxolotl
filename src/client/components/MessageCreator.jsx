@@ -14,12 +14,16 @@ import { connect } from 'react-redux';
 import * as actions from '../actions/actions';
 
 const mapStateToProps = (store) => ({   
-	messageInput: store.chatbox.messageInput  
+	messageInput: store.chatbox.messageInput,
+	currentUser: store.chatbox.currentUser,
+	conversationPartner: store.chatbox.conversationPartner
 });
 
 const mapDispatchToProps = (dispatch) => ({
 	updateInput: (event) => {dispatch(actions.updateInput(event))},
-	addMessage: () => {dispatch(actions.addMessage())}
+	sendMessage: (currentUser, conversationPartner, messageInput) => {
+		dispatch(actions.sendMessage(currentUser, conversationPartner, messageInput))
+	}
 });
 
 class MessageCreator extends Component {
@@ -27,15 +31,18 @@ class MessageCreator extends Component {
 		super(props);
 	}
 
+	handleSend() {
+		this.props.sendMessage(this.props.currentUser, this.props.conversationPartner, this.props.messageInput)
+	}
+
 	render() {
 		return(
       <div className="message-creator" style={style.messageCreator}>
-				<input className="message-input" onKeyPress={(event) => (event.key === 'Enter' ? this.props.addMessage() : null)} value={this.props.messageInput} onChange={(event) => this.props.updateInput(event)}/>
-				<button className="send-button" onClick={this.props.addMessage}>Send</button>
+				<input className="message-input" onKeyPress={(event) => (event.key === 'Enter' ? this.handleSend : null)} value={this.props.messageInput} onChange={(event) => this.props.updateInput(event)}/>
+				<button className="send-button" onClick={this.handleSend}>Send</button>
       </div>
     );
 	};
-	
 };
 
 const style = {

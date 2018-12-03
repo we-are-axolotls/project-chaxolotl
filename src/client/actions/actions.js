@@ -13,12 +13,17 @@ import * as types from '../constants/actionTypes';
 
 //*********************************** CONVO ACTIONS ***********************************
 
+// when selecting a different conversation
 export const selectConvo = (id) => ({
   type: types.SELECT_CONVO,
   payload: id
 });
 
-
+// whenever a new user is created
+export const updateUserBase = (newUser) => ({
+  type: types.UPDATE_USER_BASE, 
+  payload: newUser
+})
 
 //*********************************** CHATBOX ACTIONS ***********************************
 
@@ -29,45 +34,103 @@ export const updateInput = (event) => ({
 });
 
 // adds a new message to current chat conversation
-export const addMessage = () => ({
-	type: types.ADD_MESSAGE
+export const addMessage = (message) => ({
+  type: types.ADD_MESSAGE,
+  payload: message
 });
 
-// fetches user data from database
-export const fetchUserDataBegin = () => ({
-	type: types.FETCH_USER_DATA_BEGIN
+export const refreshConvo = (currentConversation) => ({
+  type: types.REFRESH_CONVO,
+  payload: currentConversation
 });
 
-// returns success message for data fetch
-export const fetchUserDataSuccess = (messages) => ({
-	type: types.FETCH_USER_DATA_SUCCESS,
-	payload: { messages }
-});
-
-// returns failure message for data fetch
-export const fetchUserDataFailure = (error) => ({
-	type: types.FETCH_USER_DATA_FAILURE,
-	payload: { error }
-});
-
-export function fetchUserData(currentUser) {
+export function refreshConversation(currentUser, conversationPartner) {
   return dispatch => {
-    dispatch(fetchUserDataBegin());
-    return fetch("/" + currentUser)
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(json => {
-        dispatch(fetchUserDataSuccess(json.userData));
-        return json.userData;
+    return fetch("/messages", {
+      method: 'GET',
+      body: {
+        senderId: currentUser,
+        receiverId: conversationPartner
+      }
+    })
+      .then(res => {
+        console.log('res', res)
+        return dispatch(refreshConvo(res))
       })
-      .catch(error => dispatch(fetchUserDataFailure(error)));
-  };
+      .catch(error => console.error(error))
+  }
 }
 
-// Handle HTTP errors since fetch won't.
-function handleErrors(response) {
-  if (!response.ok) {
-    throw Error(response.statusText);
+// send message to db and then invoke reducer
+export function sendMessage(currentUser, conversationPartner, messageInput) {
+	// const message = {
+  //   created_by: currentUser.id,
+  //   created_at: Date.now().toString(),
+  //   message: messageInput
+  // }
+
+  return dispatch => {
+    return fetch("/messages", {
+      method: 'POST',
+      body: {
+        senderId: currentUser,
+        receiverId: conversationPartner,
+        text: messageInput
+      }
+    })
+      .then(handleErrors)
+      // .then(() => addMessage(message))
+      .catch(error => console.error(error))
   }
-  return response;
 }
+
+
+
+
+
+
+
+
+
+// // fetches user data from database
+// export const fetchUserDataBegin = () => ({
+// 	type: types.FETCH_USER_DATA_BEGIN
+// });
+
+// // returns success message for data fetch
+// export const fetchUserDataSuccess = (data) => ({
+// 	type: types.FETCH_USER_DATA_SUCCESS,
+// 	payload: { data }
+// });
+
+// // returns failure message for data fetch
+// export const fetchUserDataFailure = (error) => ({
+// 	type: types.FETCH_USER_DATA_FAILURE,
+// 	payload: { error }
+// });
+
+// export function fetchUserData(currentUser) {
+//   return dispatch => {
+//     dispatch(fetchUserDataBegin());
+//     return fetch("/" + currentUser)
+//       .then(handleErrors)
+//       .then(res => res.json())
+//       .then(json => {
+//         dispatch(fetchUserDataSuccess(json.userData));
+//         return json.userData;
+//       })
+//       .catch(error => dispatch(fetchUserDataFailure(error)));
+//   };
+// }
+
+
+// export const selectConversation = () => {}
+
+
+// // Handle HTTP errors since fetch won't.
+// function handleErrors(response) {
+//   if (!response.ok) {
+//     throw Error(response.statusText);
+//   }
+//   return response;
+// }
