@@ -31,7 +31,6 @@ class ConvoContainer extends Component {
 
 	render() {
 
-
     const convos = Object.entries(this.props.userBase).map((user) => {
       return (
         <Convo id={user[0]} name={user[1]} selectConvo={this.props.selectConvo} />

@@ -34,7 +34,7 @@ class MainContainer extends Component {
 		// fetch from db, and populate store with data from db
 
 		// Wait for backend connection to test this
-		/*********         this.props.dispatch(fetchUserData(this.props.currentUser.id));         ***********/
+		//this.props.dispatch(fetchUserData(this.props.currentUser.id));
 	}
 
 	render() {
