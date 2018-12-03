@@ -1,16 +1,23 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: ["./src/client/index.js"],
   output: {
-    path: path.join(__dirname, "/dist"),
+    path: path.join(__dirname, "/dist/"),
+    publicPath: '/dist/',
     filename: "index-bundle.js"
   },
+  
+  devServer: {
+		watchContentBase: true,
+		compress: true,
+		port: 3000
+	}, 
+
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
@@ -20,9 +27,8 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/index.html"
-    })
-  ]
+  resolve: {
+		// allows users to leave off .js or .jsx when they import files
+		extensions: ['.js', '.jsx']
+	}
 };
