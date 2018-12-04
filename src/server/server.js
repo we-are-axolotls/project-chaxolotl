@@ -53,7 +53,9 @@ app.get('/messages/:senderId/:receiverId', async(req, res) => {
 
 //Add new message to database. req.body includes {text: string, senderId: string, receiverId: string}
 app.post('/messages', async (req, res) => {
+  console.log('this is the body', req.body)
   const newMessage = await addMessage(req.body);
+  console.log('newmssg', newMessage)
   res.send(newMessage);
 })
 

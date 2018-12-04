@@ -29,6 +29,7 @@ const mapDispatchToProps = (dispatch) => ({
 class MessageCreator extends Component {
 	constructor(props) {
 		super(props);
+		this.handleSend = this.handleSend.bind(this);
 	}
 
 	handleSend() {

@@ -67,12 +67,14 @@ const ChatBoxReducer = (state=initialState, action) => {
 			}
 
 		case types.SET_CONVO: 
-      currentConversation = state.currentConversation.slice();
-      currentConversation = action.payload;
+			currentConversation = state.currentConversation.slice();
+			currentConversation = action.payload[0];
+			const conversationPartner = action.payload[1];
 
       return {
         ...state,
-        currentConversation: currentConversation
+				currentConversation: currentConversation,
+				conversationPartner: conversationPartner
       }
 
     //******************* CHAT BOX ACTIONS *******************
