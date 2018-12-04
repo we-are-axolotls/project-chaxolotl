@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 
 const messageSchema = new mongoose.Schema({
   text: String,
-  senderId: Number,
-  receiverId: Number
+  senderId: String,
+  receiverId: String
   // senderId: {
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: 'User'
