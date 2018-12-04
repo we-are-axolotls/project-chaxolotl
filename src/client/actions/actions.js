@@ -52,7 +52,7 @@ export const populateUsers = (users) => ({
 export const getUsers = () => {
   return dispatch => {
     return fetch("/users")
-      .then(res => res.json())
+      .then(function(res) { return res.json() })
       .then(res => dispatch(populateUsers(res)))
       .catch(error => console.error(error))
   }
@@ -60,23 +60,31 @@ export const getUsers = () => {
 
 export function selectConversation(currentUser, conversationPartner) {
   return dispatch => {
-    return fetch("/messages/" + currentUser.id + "/" + conversationPartner)
-    .then(res => res.json())    
-    .then(res => {
-      return dispatch(setConvo(res))
-    })
-    .catch(error => console.error(error))
+    return fetch("/messages/" + currentUser.id + "/" + conversationPartner, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then((res) => dispatch(setConvo(res, conversationPartner)))
+      .catch(error => console.error(error))
   }
 }
 
 export function refreshConversation(currentUser, conversationPartner) {
   return dispatch => {
-    return fetch("/messages/" + currentUser.id + "/" + conversationPartner)
-      .then(res => {
-        return res.json()
-      })
-      .then(res => dispatch(setConvo(res)))
-      .catch(error => console.error(error))
+    return fetch("/messages/" + currentUser.id + "/" + conversationPartner, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then(res => res.json())
+    .then((res) => dispatch(setConvo(res, conversationPartner)))      
+    .catch(error => console.error(error))
   }
 }
 
@@ -88,16 +96,18 @@ export function sendMessage(currentUser, conversationPartner, messageInput) {
   //   message: messageInput
   // }
 
-  console.log('sending', currentUser, conversationPartner, messageInput)
-
   return dispatch => {
     return fetch("/messages", {
       method: 'POST',
-      body: {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
         senderId: currentUser,
         receiverId: conversationPartner,
         text: messageInput
-      }
+      })
     })
       .then(handleErrors)
       // .then(() => addMessage(message))
@@ -148,10 +158,10 @@ export function sendMessage(currentUser, conversationPartner, messageInput) {
 // export const selectConversation = () => {}
 
 
-// // Handle HTTP errors since fetch won't.
-// function handleErrors(response) {
-//   if (!response.ok) {
-//     throw Error(response.statusText);
-//   }
-//   return response;
-// }
+// Handle HTTP errors since fetch won't.
+function handleErrors(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response;
+}

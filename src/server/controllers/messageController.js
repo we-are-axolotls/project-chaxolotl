@@ -4,6 +4,7 @@ const Message = require('../models/message');
 
 //add a new message
 const addMessage = (message) => {
+  console.log('creating message', message)
   return Message.create(message);
 }
 
